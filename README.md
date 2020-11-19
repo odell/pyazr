@@ -50,3 +50,19 @@ channel1 = azr.predict([3.0])
 
 plot(channel1.e_com, channel1.xs_com_fit)
 ```
+
+## Installation
+
+Once the repository has been cloned in `location`, the user can simply modify
+the path and `import` the relevant modules.
+
+```
+import sys
+sys.path.append([location])
+
+import azr
+import parameter
+import utility
+import level
+import output
+```
