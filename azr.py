@@ -31,8 +31,6 @@ class AZR:
         self.use_brune = True
         self.use_gsl = True
         self.ext_par_file = '\n'
-        self.column = 3
-        self.choice = 1
         self.ext_capture_file = '\n'
 
         Jpi = [l[0].spin*l[0].parity for l in self.initial_levels] 
