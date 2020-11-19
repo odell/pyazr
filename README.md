@@ -2,9 +2,8 @@
 
 pyazr is a Python module that serves as an interface to AZURE2.
 
-It _accompanies_ AZURE2; it is _not_ a replacement. The primary goal is to
-provide an accessible means of running AZURE2 with a set of R-matrix parameters
-and reading the output.
+It _accompanies_ AZURE2. The primary goal is to provide an accessible means of
+running AZURE2 with a set of R-matrix parameters and reading the output.
 
 ## Requirements
 
