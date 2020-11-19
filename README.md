@@ -30,7 +30,7 @@ Defines a sampled or "free" parameter.
 
 ### Level
 
-Defines an R-matrix level (a line in the <levels> section of the .azr file).
+Defines an R-matrix level (a line in the `<levels>` section of the .azr file).
 
 ### Output
 
