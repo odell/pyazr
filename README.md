@@ -39,15 +39,15 @@ extremely well-documented manual for the output file format.)
 
 ## Example
 
-`
-import pyazr
+```
+from pyazr import AZR
 from parameter import Parameter
 
 parameters = [Parameter(Parameter(1/2, -1, 'width', 1)]
 
-azr = pyazr.AZR('example.azr', parameters, ['AZUREOut_aa=1_R=1.out'])
+azr = AZR('example.azr', parameters, ['AZUREOut_aa=1_R=1.out'])
 
 channel1 = azr.predict([3.0])
 
 plot(channel1.e_com, channel1.xs_com_fit)
-`
+```
