@@ -42,7 +42,7 @@ extremely well-documented manual for the output file format.)
 from pyazr import AZR
 from parameter import Parameter
 
-parameters = [Parameter(Parameter(1/2, -1, 'width', 1)]
+parameters = [Parameter(1/2, -1, 'width', 1)]
 
 azr = AZR('example.azr', parameters, ['AZUREOut_aa=1_R=1.out'])
 
