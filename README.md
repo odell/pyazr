@@ -58,7 +58,7 @@ the path and `import` the relevant modules.
 
 ```
 import sys
-sys.path.append([location])
+sys.path.append(location)
 
 import azr
 import parameter
