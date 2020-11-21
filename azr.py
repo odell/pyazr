@@ -59,6 +59,15 @@ class AZR:
         return [l for sublevel in levels for l in sublevel]
 
 
+    def get_input_values(self):
+        '''
+        Returns the values of the sampled parameters in the input file.
+        '''
+        values = [getattr(self.initial_levels[i][j], kind) for (i, j, kind) in
+                  self.addresses]
+        return values
+
+
     def predict(self, theta, dress_up=True, full_output=False):
         '''
         Takes a point in parameter space, theta.
@@ -116,10 +125,10 @@ class AZR:
 
         if dress_up:
             data = [Output(output_dir + '/' + of) for of in
-                    self.output_filenames]
+                    self.extrap_filenames]
         else:
             data = [np.loadtxt(output_dir + '/' + of) for of in
-                    self.output_filenames]
+                    self.extrap_filenames]
 
         shutil.rmtree(output_dir)
         os.remove(input_filename)
