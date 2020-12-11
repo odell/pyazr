@@ -9,6 +9,7 @@ import level
 import utility
 from parameter import Parameter
 from output import Output
+from data import Data
 
 class AZR:
     '''
@@ -26,6 +27,7 @@ class AZR:
         self.parameters = parameters
         self.output_filenames = output_filenames
         self.extrap_filenames = extrap_filenames
+        self.data = Data(self.input_filename)
 
         # default values
         self.use_brune = True
@@ -68,7 +70,12 @@ class AZR:
         return values
 
 
-    def predict(self, theta, dress_up=True, full_output=False):
+    def update_data_directories(self, new_dir):
+        self.data.update_all_dir(new_dir)
+        self.input_file_contents = self.data.write_segments(self.input_file_contents)
+
+
+    def predict(self, theta, mod_data=False, dress_up=True, full_output=False):
         '''
         Takes a point in parameter space, theta.
         dress_up    : Use Output class.
@@ -84,31 +91,37 @@ class AZR:
             * deletes output_[rand]/
         Returns predicted values a reduced width amplitudes.
         '''
-        input_filename, output_dir = utility.random_output_dir_filename()
+        input_filename, output_dir, data_dir = utility.random_workspace()
+
+        if mod_data:
+            self.update_data_directories(data_dir)
+
         new_levels = self.generate_levels(theta)
         utility.write_input_file(self.input_file_contents, new_levels,
                                  input_filename, output_dir)
+
         response = utility.run_AZURE2(input_filename, choice=1,
             use_brune=self.use_brune, ext_par_file=self.ext_par_file,
             ext_capture_file=self.ext_capture_file, use_gsl=self.use_gsl)
 
         if dress_up:
-            data = [Output(output_dir + '/' + of) for of in
-                    self.output_filenames]
+            output = [Output(output_dir + '/' + of) for of in
+                      self.output_filenames]
         else:
-            data = [np.loadtxt(output_dir + '/' + of) for of in
-                    self.output_filenames]
+            output = [np.loadtxt(output_dir + '/' + of) for of in
+                      self.output_filenames]
 
         if full_output:
-            data = (data, utility.read_rwas_jpi(output_dir))
+            output = (output, utility.read_rwas_jpi(output_dir))
 
         shutil.rmtree(output_dir)
+        shutil.rmtree(data_dir)
         os.remove(input_filename)
 
-        return data
+        return output
 
 
-    def extrapolate(self, theta, dress_up=True):
+    def extrapolate(self, theta):
         '''
         See predict() documentation.
         '''
@@ -123,17 +136,13 @@ class AZR:
             use_brune=self.use_brune, ext_par_file=self.ext_par_file,
             ext_capture_file=self.ext_capture_file, use_gsl=self.use_gsl)
 
-        if dress_up:
-            data = [Output(output_dir + '/' + of) for of in
-                    self.extrap_filenames]
-        else:
-            data = [np.loadtxt(output_dir + '/' + of) for of in
-                    self.extrap_filenames]
+        output = [np.loadtxt(output_dir + '/' + of) for of in
+                  self.extrap_filenames]
 
         shutil.rmtree(output_dir)
         os.remove(input_filename)
 
-        return data
+        return output
 
 
     def rwas(self, theta):

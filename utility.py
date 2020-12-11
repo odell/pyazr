@@ -80,6 +80,16 @@ def random_output_dir_filename():
     return input_filename, output_dir
 
 
+def random_workspace():
+    s = 'mcazure_' + random_string()
+    output_dir = 'output_' + s
+    data_dir = 'data_' + s
+    os.mkdir(output_dir)
+    os.mkdir(data_dir)
+    input_filename = s + '.azr'
+    return input_filename, output_dir, data_dir
+
+
 def write_input_file(old_input_file_contents, new_levels, input_filename,
     output_dir):
     '''
