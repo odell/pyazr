@@ -9,7 +9,6 @@ import level
 import utility
 from parameter import Parameter
 from output import Output
-from data import Data
 
 class AZR:
     '''
@@ -27,7 +26,6 @@ class AZR:
         self.parameters = parameters
         self.output_filenames = output_filenames
         self.extrap_filenames = extrap_filenames
-        self.data = Data(self.input_filename)
 
         # default values
         self.use_brune = True
@@ -70,12 +68,7 @@ class AZR:
         return values
 
 
-    def update_data_directories(self, new_dir):
-        self.data.update_all_dir(new_dir)
-        self.input_file_contents = self.data.write_segments(self.input_file_contents)
-
-
-    def predict(self, theta, mod_data=False, dress_up=True, full_output=False):
+    def predict(self, theta, dress_up=True, full_output=False):
         '''
         Takes a point in parameter space, theta.
         dress_up    : Use Output class.
@@ -92,9 +85,6 @@ class AZR:
         Returns predicted values a reduced width amplitudes.
         '''
         input_filename, output_dir, data_dir = utility.random_workspace()
-
-        if mod_data:
-            self.update_data_directories(data_dir)
 
         new_levels = self.generate_levels(theta)
         utility.write_input_file(self.input_file_contents, new_levels,
@@ -121,7 +111,7 @@ class AZR:
         return output
 
 
-    def extrapolate(self, theta):
+    def extrapolate(self, theta, use_brune=None, use_gsl=None):
         '''
         See predict() documentation.
         '''
@@ -133,8 +123,9 @@ class AZR:
         utility.write_input_file(self.input_file_contents, new_levels,
                                  input_filename, output_dir)
         response = utility.run_AZURE2(input_filename, choice=3,
-            use_brune=self.use_brune, ext_par_file=self.ext_par_file,
-            ext_capture_file=self.ext_capture_file, use_gsl=self.use_gsl)
+            use_brune=use_brune if use_brune is not None else self.use_brune,
+            use_gsl=use_gsl if use_gsl is not None else self.use_gsl,
+            ext_par_file=self.ext_par_file)
 
         output = [np.loadtxt(output_dir + '/' + of) for of in
                   self.extrap_filenames]
