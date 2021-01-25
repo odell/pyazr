@@ -20,8 +20,9 @@ class Segment:
         self.channel = int(self.row[CHANNEL_INDEX])
         self.filename = self.row[FILENAME_INDEX]
 
-        self.data = np.loadtxt(self.filename)
-        self.n = self.data.shape[0]
+        self.values_original = np.loadtxt(self.filename)
+        self.values = np.copy(self.values_original)
+        self.n = self.values.shape[0]
 
     
     def string(self):
@@ -35,14 +36,14 @@ class Segment:
 
     def update_dir(self, new_dir):
         i = self.filename.find('/')
-        if i > 0:
+        if i >= 0:
             self.filename = new_dir + '/' + self.filename[i+1:]
-            np.savetxt(self.filename, self.data)
+            np.savetxt(self.filename, self.values)
 
 
-    def write_energies(self, energies):
-        self.data[:, 0] = energies
-        np.savetxt(self.filename, self.data)
+    def shift_energies(self, shift):
+        self.values[:, 0] = self.values_original[:, 0] + shift
+
 
 class Data:
     '''
