@@ -6,6 +6,7 @@ import string
 import random
 import os
 from subprocess import Popen, PIPE
+import numpy as np
 from level import Level
 
 '''
@@ -172,6 +173,29 @@ def read_rwas_jpi(output_dir):
     return rwas
 
 
+def read_ext_capture_file(filename):
+    ext_capture_data = []
+    with open(filename, 'r') as f:
+        for line in f:
+            i = line.find('(')
+            j = line.find(',')
+            k = line.find(')')
+            x = float(line[i+1:j])
+            y = float(line[j+1:k])
+            ext_capture_data.append([x, y])
+    return np.array(ext_capture_data)
+
+
+def write_ext_capture_file(filename, data):
+    '''
+    data is expected to be 2-column matrix
+    '''
+    with open(filename, 'w') as f:
+        for row in data:
+            x, y = row
+            f.write(f'({x:.5e},{y:.5e})\n')
+        
+    
 def run_AZURE2(input_filename, choice=1, use_brune=False, ext_par_file='\n', ext_capture_file='\n', use_gsl=False):
     cl_args = ['AZURE2', input_filename, '--no-gui', '--no-readline']
     if use_brune:

@@ -18,6 +18,8 @@ The classes defined in this module are:
 2. Parameter
 3. Level
 4. Output
+5. Segment
+6. Data
 
 ### AZR
 
@@ -35,6 +37,16 @@ Defines an R-matrix level (a line in the `<levels>` section of the .azr file).
 
 Data structure for accessing output data. (I got tired of consulting the
 extremely well-documented manual for the output file format.)
+
+### Segment
+
+Data structure to organize the information contained in line of the
+<segmentsData> section of the .azr file.
+
+### Data
+
+Data structure that hold a list of Segments and provides some convenient
+functions for applying actions to all of them.
 
 ## Example
 

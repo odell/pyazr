@@ -26,6 +26,9 @@ class Segment:
 
     
     def string(self):
+        '''
+        Returns a string of the text in the segment line.
+        '''
         row = self.row.copy()
         row[INCLUDE_INDEX] = '1' if self.include else '0'
         row[CHANNEL_INDEX] = str(self.channel)
@@ -35,6 +38,12 @@ class Segment:
 
 
     def update_dir(self, new_dir):
+        '''
+        Updates the path directory of the segment.
+        If modifications are made to the data, the modified data is written to
+        an ephemeral directory so that multiple processes can do so
+        simultaneously.
+        '''
         i = self.filename.find('/')
         if i >= 0:
             self.filename = new_dir + '/' + self.filename[i+1:]
@@ -66,11 +75,19 @@ class Data:
 
 
     def update_all_dir(self, new_dir):
+        '''
+        Updates all the path directories of the segments.
+        '''
         for seg in self.all_segments:
             seg.update_dir(new_dir)
 
 
     def write_segments(self, contents):
+        '''
+        Writes the segments to contents.
+        "contents" is a representation of the .azr file (list of strings)
+        This is typically done in preparation for writing a new .azr file.
+        '''
         start = contents.index('<segmentsData>')+1
         stop = contents.index('</segmentsData>')
 

@@ -165,3 +165,47 @@ class AZR:
         os.remove(input_filename)
 
         return rwas
+
+    
+    def ext_capture_integrals(self, use_gsl=False, mod_data=False):
+        '''
+        Returns the AZURE2 output of external capture integrals.
+        '''
+        input_filename, output_dir, data_dir = utility.random_workspace()
+
+        if mod_data:
+            self.update_data_directories(data_dir)
+
+        new_levels = self.initial_levels.copy()
+        new_levels = [l for sl in new_levels for l in sl]
+        utility.write_input_file(self.input_file_contents, new_levels,
+                                 input_filename, output_dir)
+        response = utility.run_AZURE2(input_filename, choice=1,
+            use_brune=self.use_brune, ext_par_file=self.ext_par_file,
+            ext_capture_file='\n', use_gsl=use_gsl)
+
+        ec = utility.read_ext_capture_file(output_dir + '/intEC.dat')
+
+        shutil.rmtree(output_dir)
+        shutil.rmtree(data_dir)
+        os.remove(input_filename)
+
+        return ec
+
+    
+    def update_ext_capture_integrals(self, segment_indices, shifts, use_gsl=False):
+        '''
+        Takes:
+          * a list of indices to identification which data segment is being
+            shifted
+          * a list of shifts to be applied (in the same order as the indices are
+            provided)
+        * Adjusts the energies of data segments (identified by index) by the
+        provided shifts (MeV, lab).
+        * Evaluates the external capture (EC) integrals.
+        * Returns the values from the EC file.
+        '''
+        for (i, shift) in zip(segment_indices, shifts):
+            self.data.segments[i].shift_energies(shift)
+
+        return self.ext_capture_integrals(use_gsl=use_gsl, mod_data=True)
