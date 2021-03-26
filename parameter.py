@@ -17,3 +17,9 @@ class Parameter:
         self.kind = kind
         self.channel = int(channel)
         self.rank = rank
+
+
+    def print(self):
+        parity = '+' if self.parity == 1 else '-'
+        print(f'{self.spin}{parity} {self.kind} (number {self.rank}) in \
+particle pair {self.channel}')
