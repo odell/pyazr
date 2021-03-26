@@ -51,7 +51,7 @@ functions for applying actions to all of them.
 ## Example
 
 ```
-from pyazr import AZR
+from azr import AZR
 from parameter import Parameter
 
 parameters = [Parameter(1/2, -1, 'width', 1)]
