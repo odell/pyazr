@@ -17,7 +17,6 @@ import matplotlib.pyplot as plt
 pwd = os.getcwd()
 i = pwd.find('/test')
 
-print(pwd[:i])
 # Import pyazr classes.
 sys.path.append(pwd[:i])
 from azr import AZR
