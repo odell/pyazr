@@ -127,3 +127,15 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# custom
+_Store
+*.h5
+*.pdf
+*.sim
+*.png
+*.svg
+*.orig
+output_mcazure_*/
+data_mcazure_*/
+mcazure_*.azr
