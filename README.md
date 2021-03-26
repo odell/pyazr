@@ -10,6 +10,9 @@ running AZURE2 with a set of R-matrix parameters and reading the output.
 [AZURE2](https://azure.nd.edu) must be installed and available at the command
 line via `AZURE2`.
 
+[NumPy](https://numpy.org) and [Matplotlib](https://matplotlib.org/) must be
+available in order to run the test script in `test` directory.
+
 ## Overview
 
 The classes defined in this module are:
@@ -41,7 +44,7 @@ extremely well-documented manual for the output file format.)
 ### Segment
 
 Data structure to organize the information contained in line of the
-<segmentsData> section of the .azr file.
+`<segmentsData>` section of the .azr file.
 
 ### Data
 
@@ -50,18 +53,10 @@ functions for applying actions to all of them.
 
 ## Example
 
-```
-from azr import AZR
-from parameter import Parameter
+In the `test` directory there is a Python script (`test.py`) that predicts the
+12C(p,gamma) cross section and compares it to the Vogl data.
 
-parameters = [Parameter(1/2, -1, 'width', 1)]
-
-azr = AZR('example.azr', parameters, ['AZUREOut_aa=1_R=1.out'])
-
-channel1 = azr.predict([3.0])
-
-plot(channel1.e_com, channel1.xs_com_fit)
-```
+Note that the script uses NumPy and Matplotlib.
 
 ## Installation
 
