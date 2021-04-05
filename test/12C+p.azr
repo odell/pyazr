@@ -8,8 +8,8 @@ none                                                                            
 none                                                                                                #Lo-Matrix and Penetrability Check
 none                                                                                                #Legendre Polynomial Check
 none                                                                                                #Coulomb Amplitudes Check
-file                                                                                                #Reaction Pathway Check
-file                                                                                                #Angular Distributions Check
+none                                                                                                #Reaction Pathway Check
+none                                                                                                #Angular Distributions Check
 </config>
 <levels>
  0.5   -1            0    1    1    1    1    2    1    1    0                1.87  0.5    1    0    1            0 1.00728      12    1    6      1.94351      1.94351    0    0          0.0     0     3.4       5.5857            0       0
