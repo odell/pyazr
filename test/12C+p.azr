@@ -2,7 +2,7 @@
 true                                                                                                #Perform A-Matrix Calculation
 output/                                                                                             #Full Path to Output Directory
 checks/                                                                                             #Full Path to Checks Directory
-file                                                                                                #Compond Nucleus Check
+none                                                                                                #Compond Nucleus Check
 none                                                                                                #Boundary Condition Check
 none                                                                                                #Data Check
 none                                                                                                #Lo-Matrix and Penetrability Check
