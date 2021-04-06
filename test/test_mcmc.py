@@ -126,6 +126,9 @@ backend.reset(nw, nd)
 nsteps = 100 # How many steps should each walker take?
 nthin = 10 # How often should the walker save a step?
 nprocs = 2 # How many Python processes do you want to allocate?
+# AZURE2 and emcee are both parallelized. We'll restrict AZURE2 to 1 thread to
+# simplify things.
+os.environ['OMP_NUM_THREADS'] = '1'
 
 # emcee allows the user to specify the way the ensemble generates proposals.
 moves = [(emcee.moves.DESnookerMove(), 0.8), (emcee.moves.DEMove(), 0.2)]
