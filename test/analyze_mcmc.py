@@ -13,7 +13,6 @@ longer.
 
 import os
 import sys
-from multiprocessing import Pool
 
 import emcee
 import corner
@@ -22,8 +21,7 @@ import matplotlib.pyplot as plt
 
 import model
 
-pool = Pool(processes=1)
-os.environ['OMP_NUM_THREADS'] = '1'
+os.environ['OMP_NUM_THREADS'] = '4'
 
 ########################################
 # 1. Read in test_mcmc.h5.
@@ -59,7 +57,7 @@ vogl_err = output.xs_err_com_data
 
 # The default parameters of test_mcmc.py produce a short chain. When analyzing a
 # longer run, one may want to do the evaluation on a subset of the chain.
-brush = pool.map(mu, chain)
+brush = np.array([mu(theta) for theta in chain])
 
 fig, ax = plt.subplots()
 fig.patch.set_facecolor('white')
