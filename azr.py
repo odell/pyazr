@@ -121,12 +121,14 @@ class AZR:
         return output
 
 
-    def extrapolate(self, theta, use_brune=None, use_gsl=None):
+    def extrapolate(self, theta, use_brune=None, use_gsl=None, extrap_files=None):
         '''
         See predict() documentation.
         '''
-        assert self.extrap_filenames is not None, \
-            'No .extrap files specified.'
+        if extrap_files is None:
+            assert self.extrap_filenames is not None, \
+                'No .extrap files specified.'
+            extrap_files = self.extrap_filenames.copy()
 
         input_filename, output_dir = utility.random_output_dir_filename()
         new_levels = self.generate_levels(theta)
@@ -138,7 +140,7 @@ class AZR:
             ext_par_file=self.ext_par_file)
 
         output = [np.loadtxt(output_dir + '/' + of) for of in
-                  self.extrap_filenames]
+                  extrap_files]
 
         shutil.rmtree(output_dir)
         os.remove(input_filename)
