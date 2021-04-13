@@ -25,12 +25,33 @@ class TestSegment:
             self.output_filename = f'AZUREOut_aa={self.in_channel}_TOTAL_CAPTURE.extrap'
 
 
+    def string(self):
+        '''
+        Returns a string of the text in the segment line.
+        '''
+        row = self.row.copy()
+        row[INCLUDE_INDEX] = '1' if self.include else '0'
+        row[IN_CHANNEL_INDEX] = str(self.in_channel)
+        
+        return ' '.join(row)
+
+
 class Test:
     '''
     Structure to hold all of the test segments in a provided AZURE2 input file.
     '''
-    def __init__(self, filename):
-        self.contents = utility.read_input_file(filename)
+    def __init__(self, filename, contents=None):
+        '''
+        Takes:
+            * filename : input filename (.azr)
+            * contents : list of strings (generated from the input file)
+        '''
+        # If contents is provided, don't try to read the input file.
+        if contents is not None:
+            self.contents = contents.copy()
+        else:
+            self.contents = utility.read_input_file(filename)
+
         i = self.contents.index('<segmentsTest>')+1
         j = self.contents.index('</segmentsTest>')
 
@@ -43,7 +64,7 @@ class Test:
         for seg in self.all_segments:
             if seg.include:
                 self.segments.append(seg)
-        
+       
         self.output_files = []
         for seg in self.segments:
             self.output_files.append(seg.output_filename)
@@ -64,3 +85,22 @@ class Test:
 
         return contents
 
+    
+    def get_output_files(self):
+        segments = [] #  only the segments to be included in the calculation
+        for seg in self.all_segments:
+            if seg.include:
+                segments.append(seg)
+       
+        output_files = []
+        for seg in segments:
+            output_files.append(seg.output_filename)
+
+        return list(np.unique(output_files))
+
+
+    def show_test_segments(self):
+        print('index | test segment')
+        print('--------------------')
+        for (i, seg) in enumerate(self.all_segments):
+            print(i,'|',  seg.string())

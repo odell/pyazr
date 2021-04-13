@@ -87,9 +87,11 @@ class AZR:
 
     def predict(self, theta, mod_data=False, dress_up=True, full_output=False):
         '''
-        Takes a point in parameter space, theta.
-        dress_up    : Use Output class.
-        full_output : Return reduced width amplitudes as well.
+        Takes:
+            * a point in parameter space, theta.
+            * dress_up    : Use Output class.
+            * full_output : Return reduced width amplitudes as well.
+            * mod_data    : Was the data modified since the last evaluation?
         Does:
             * creates a random filename ([rand].azr)
             * creates a (similarly) random output directory (output_[rand]/)
@@ -99,7 +101,8 @@ class AZR:
             * reads observable from output_[rand]/output_filename
             * deletes [rand].azr
             * deletes output_[rand]/
-        Returns predicted values a reduced width amplitudes.
+        Returns:
+            * predicted values a reduced width amplitudes.
         '''
         input_filename, output_dir, data_dir = utility.random_workspace()
 
@@ -131,26 +134,37 @@ class AZR:
         return output
 
 
-    def extrapolate(self, theta, use_brune=None, use_gsl=None, extrap_files=None):
+    def extrapolate(self, theta, segment_indices=None, use_brune=None,
+                    use_gsl=None):
         '''
         See predict() documentation.
         '''
-        if extrap_files is None:
-            assert self.extrap_filenames is not None, \
-                'No .extrap files specified.'
-            extrap_files = self.extrap_filenames.copy()
+        contents = self.input_file_contents.copy()
 
-        input_filename, output_dir = utility.random_output_dir_filename()
+        # Map theta to a new list of levels.
         new_levels = self.generate_levels(theta)
-        utility.write_input_file(self.input_file_contents, new_levels,
-                                 input_filename, output_dir)
+
+        # What extrapolation files need to be read?
+        # If the user specifies the indices of the segments, then make sure
+        # those are "include"d in the calculation and everything else is
+        # excluded.
+        if segment_indices is not None:
+            t = Test('', contents=contents)
+            for (i, test_segment) in enumerate(t.all_segments):
+                test_segment.include = i in segment_indices
+            t.write_segments(contents)
+
+        # Write the updated contents to the input file and run.
+        input_filename, output_dir = utility.random_output_dir_filename()
+        utility.write_input_file(contents, new_levels, input_filename,
+                                 output_dir)
         response = utility.run_AZURE2(input_filename, choice=3,
             use_brune=use_brune if use_brune is not None else self.use_brune,
             use_gsl=use_gsl if use_gsl is not None else self.use_gsl,
             ext_par_file=self.ext_par_file)
 
         output = [np.loadtxt(output_dir + '/' + of) for of in
-                  extrap_files]
+                  t.get_output_files()]
 
         shutil.rmtree(output_dir)
         os.remove(input_filename)
