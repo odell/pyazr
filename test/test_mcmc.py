@@ -35,9 +35,9 @@ for i in range(nw):
 backend = emcee.backends.HDFBackend('test_mcmc.h5')
 backend.reset(nw, model.nd)
 
-nsteps = 100 # How many steps should each walker take?
+nsteps = 2000 # How many steps should each walker take?
 nthin = 10 # How often should the walker save a step?
-nprocs = 2 # How many Python processes do you want to allocate?
+nprocs = 4 # How many Python processes do you want to allocate?
 # AZURE2 and emcee are both parallelized. We'll restrict AZURE2 to 1 thread to
 # simplify things.
 os.environ['OMP_NUM_THREADS'] = '1'
