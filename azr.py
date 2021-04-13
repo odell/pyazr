@@ -10,6 +10,7 @@ import utility
 from parameter import Parameter
 from output import Output
 from data import Data
+from nodata import Test
 
 class AZR:
     '''
@@ -19,15 +20,24 @@ class AZR:
     output_filenames : Which output files (AZUREOut_*.out) are read?
     extrap_filenames : Which output files (AZUREOut_*.extrap) are read?
     '''
-    def __init__(self, input_filename, parameters, output_filenames,
+    def __init__(self, input_filename, parameters, output_filenames=None,
                  extrap_filenames=None):
         self.input_filename = input_filename
         self.input_file_contents = utility.read_input_file(input_filename)
         self.initial_levels = utility.read_levels(input_filename)
         self.parameters = parameters
-        self.output_filenames = output_filenames
-        self.extrap_filenames = extrap_filenames
         self.data = Data(self.input_filename)
+        self.test = Test(self.input_filename)
+
+        if output_filenames is None:
+            self.output_filenames = self.data.output_files
+        else:
+            self.output_filenames = output_filenames
+
+        if extrap_filenames is None:
+            self.extrap_filenames = self.test.output_files
+        else:
+            self.extrap_filenames = extrap_filenames
 
         # default values
         self.use_brune = True

@@ -6,7 +6,8 @@ import numpy as np
 import utility
 
 INCLUDE_INDEX = 0
-CHANNEL_INDEX = 2
+IN_CHANNEL_INDEX = 1
+OUT_CHANNEL_INDEX = 2
 FILENAME_INDEX = 11
 
 class Segment:
@@ -17,12 +18,18 @@ class Segment:
     def __init__(self, row):
         self.row = row.split()
         self.include = (int(self.row[INCLUDE_INDEX]) == 1)
-        self.channel = int(self.row[CHANNEL_INDEX])
+        self.in_channel = int(self.row[IN_CHANNEL_INDEX])
+        self.out_channel = int(self.row[OUT_CHANNEL_INDEX])
         self.filename = self.row[FILENAME_INDEX]
-
+        
         self.values_original = np.loadtxt(self.filename)
         self.values = np.copy(self.values_original)
         self.n = self.values.shape[0]
+
+        if self.out_channel != -1:
+            self.output_filename = f'AZUREOut_aa={self.in_channel}_R={self.out_channel}.out'
+        else:
+            self.output_filename = f'AZUREOut_aa={self.in_channel}_TOTAL_CAPTURE.out'
 
     
     def string(self):
@@ -72,6 +79,11 @@ class Data:
         for seg in self.all_segments:
             if seg.include:
                 self.segments.append(seg)
+
+        self.output_files = []
+        for seg in self.segments:
+            self.output_files.append(seg.output_filename)
+        self.output_files = list(np.unique(self.output_files))
 
 
     def update_all_dir(self, new_dir):
