@@ -16,8 +16,10 @@ indices make it more convenient to access the desired parameter.
 J_INDEX = 0
 PI_INDEX = 1
 ENERGY_INDEX = 2
+ENERGY_FIXED_INDEX = 3
 CHANNEL_INDEX = 5
 WIDTH_INDEX = 11
+WIDTH_FIXED_INDEX = 10
 CHANNEL_RADIUS_INDEX = 27
 NORM_FACTOR_INDEX = 8
 FILENAME_INDEX = 11
@@ -34,6 +36,16 @@ def read_input_file(filename):
     return contents
 
 
+def read_level_contents(infile):
+    '''
+    Reads rows between <levels> and </levels>.
+    '''
+    contents = read_input_file(infile)
+    start = contents.index('<levels>')+1
+    stop = contents.index('</levels>')
+    return contents[start:stop]
+
+
 def read_levels(infile):
     '''
     Packages the contents of the input file (infile, str) into instances of
@@ -41,22 +53,23 @@ def read_levels(infile):
     Takes an input filename (str).
     Returns a list of Level instances.
     '''
-    contents = read_input_file(infile)
-    start = contents.index('<levels>')+1
-    stop = contents.index('</levels>')
+    level_contents = read_level_contents(infile)
 
     levels = []
     sublevels = []
-    for row in contents[start:stop]:
+    for row in level_contents:
         if row != '':
             row = row.split()
             spin = float(row[J_INDEX])
             parity = int(row[PI_INDEX])
             energy = float(row[ENERGY_INDEX])
+            energy_fixed = int(row[ENERGY_FIXED_INDEX])
             width = float(row[WIDTH_INDEX])
+            width_fixed = int(int(row[WIDTH_FIXED_INDEX]) or width == 0)
             radius = float(row[CHANNEL_RADIUS_INDEX])
             channel = int(row[CHANNEL_INDEX])
-            sublevels.append(Level(spin, parity, energy, width, radius, channel))
+            sublevels.append(Level(spin, parity, energy, energy_fixed, width,
+                                   width_fixed, radius, channel))
         else:
             levels.append(sublevels)
             sublevels = []

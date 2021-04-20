@@ -20,20 +20,45 @@ class AZR:
     output_filenames : Which output files (AZUREOut_*.out) are read?
     extrap_filenames : Which output files (AZUREOut_*.extrap) are read?
     '''
-    def __init__(self, input_filename, parameters, output_filenames=None,
+    def __init__(self, input_filename, parameters=None, output_filenames=None,
                  extrap_filenames=None):
         self.input_filename = input_filename
         self.input_file_contents = utility.read_input_file(input_filename)
         self.initial_levels = utility.read_levels(input_filename)
-        self.parameters = parameters
         self.data = Data(self.input_filename)
         self.test = Test(self.input_filename)
 
+        '''
+        If parameters are not specified, they are inferred from the input file.
+        '''
+        if parameters is None:
+            parameters = []
+            jpis = []
+            for group in self.initial_levels:
+                jpi = group[0].spin*group[0].parity
+                jpis.append(jpi)
+                for (i, sublevel) in enumerate(group):
+                    spin = sublevel.spin
+                    parity = sublevel.parity
+                    rank = jpis.count(jpi)
+                    if i == 0:
+                        if not sublevel.energy_fixed:
+                            parameters.append(Parameter(spin, parity, 'energy', i+1, rank=rank))
+                    if not sublevel.width_fixed:
+                        parameters.append(Parameter(spin, parity, 'width', i+1, rank=rank))
+        self.parameters = parameters
+
+        '''
+        If output files are not specified, they are inferred from the input file.
+        '''
         if output_filenames is None:
             self.output_filenames = self.data.output_files
         else:
             self.output_filenames = output_filenames
 
+        '''
+        If extrapolation files are not specified, they are inferred from the input file.
+        '''
         if extrap_filenames is None:
             self.extrap_filenames = self.test.output_files
         else:
@@ -45,7 +70,7 @@ class AZR:
         self.ext_par_file = '\n'
         self.ext_capture_file = '\n'
 
-        Jpi = [l[0].spin*l[0].parity for l in self.initial_levels] 
+        Jpi = [l[0].spin*l[0].parity for l in self.initial_levels]
         self.addresses = []
         for p in self.parameters:
             jpi = p.spin*p.parity
@@ -148,8 +173,8 @@ class AZR:
         # If the user specifies the indices of the segments, then make sure
         # those are "include"d in the calculation and everything else is
         # excluded.
+        t = Test('', contents=contents)
         if segment_indices is not None:
-            t = Test('', contents=contents)
             for (i, test_segment) in enumerate(t.all_segments):
                 test_segment.include = i in segment_indices
             t.write_segments(contents)
