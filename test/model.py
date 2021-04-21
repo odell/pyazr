@@ -25,17 +25,15 @@ parameters = [
     Parameter(1/2, 1, 'width', 2)
 ]
 
-# The number of parameters = number of R-matrix parameters + 1 normalization
-# factor.
+# The number of parameters = number of R-matrix parameters.
 nrpar = len(parameters)
-nd = nrpar + 1
+nd = nrpar
 
 labels = [
     r'$C_{1/2-}$',
     r'$E_{1/2+}$',
     r'$\Gamma_{1/2+,p}$',
-    r'$\Gamma_{1/2+,\gamma}$',
-    r'$f$'
+    r'$\Gamma_{1/2+,\gamma}$'
 ]
 
 # We have to tell AZURE2 which output files it should look at.
@@ -67,8 +65,7 @@ priors = [
     stats.uniform(0, 5),
     stats.uniform(1, 5),
     stats.uniform(0, 50000),
-    stats.uniform(-100, 200),
-    stats.uniform(0.5, 1.0)
+    stats.uniform(-100, 200)
 ]
 
 def lnPi(theta):
@@ -78,10 +75,9 @@ def lnPi(theta):
 # To calculate the likelihood, we generate the prediction at theta and compare
 # it to data. (Assumes data uncertainties are Gaussian and IID.)
 def lnL(theta):
-    f = theta[-1] # normalization factor (applied to theory prediction)
-    mu = azr.predict(theta[:nrpar]) # AZR object only wants R-matrix parameters
+    mu = azr.predict(theta)
     capture = mu[0].xs_com_fit
-    return np.sum(-np.log(np.sqrt(2*np.pi)*dy) - 0.5*((y - f*capture)/dy)**2)
+    return np.sum(-np.log(np.sqrt(2*np.pi)*dy) - 0.5*((y - capture)/dy)**2)
 
 
 def lnP(theta):

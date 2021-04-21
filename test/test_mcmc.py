@@ -23,12 +23,13 @@ import model
 nw = 4*model.nd # number of walkers = 4 * number of sampled parameters
 
 # Pick a point (theta) in parameter space around which we'll start each walker.
-theta0 = [2.1, 2.37, 33600, -0.6325, 1.0]
-# Each walkers needs its own starting position.
+theta0 = [2.1, 2.37, 33600, -0.6325]
+# Each walkers needs its own starting position. We'll take normally distributed
+# random values centered at theta0.
 p0 = np.zeros((nw, model.nd))
 for i in range(nw):
     mu = theta0
-    sig = np.abs(theta0) * 0.01
+    sig = np.abs(theta0) * 0.01 # 1% width
     p0[i, :] = stats.norm(mu, sig).rvs()
 
 # We'll store the chain in test_mcmc.h5. (See emcee Backends documentation.)
