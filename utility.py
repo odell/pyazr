@@ -20,6 +20,7 @@ ENERGY_FIXED_INDEX = 3
 CHANNEL_INDEX = 5
 WIDTH_INDEX = 11
 WIDTH_FIXED_INDEX = 10
+SEPARATION_ENERGY_INDEX = 21
 CHANNEL_RADIUS_INDEX = 27
 NORM_FACTOR_INDEX = 8
 FILENAME_INDEX = 11
@@ -68,8 +69,10 @@ def read_levels(infile):
             width_fixed = int(int(row[WIDTH_FIXED_INDEX]) or width == 0)
             radius = float(row[CHANNEL_RADIUS_INDEX])
             channel = int(row[CHANNEL_INDEX])
+            separation_energy = float(row[SEPARATION_ENERGY_INDEX])
             sublevels.append(Level(spin, parity, energy, energy_fixed, width,
-                                   width_fixed, radius, channel))
+                                   width_fixed, radius, channel,
+                                   separation_energy))
         else:
             levels.append(sublevels)
             sublevels = []

@@ -9,7 +9,8 @@ class Level:
     index   : Which spin^{parity} level is this? (There are frequently more than
               one. Consistent with the language, these are zero-based.)
     '''
-    def __init__(self, spin, parity, energy, energy_fixed, width, width_fixed, radius, channel):
+    def __init__(self, spin, parity, energy, energy_fixed, width, width_fixed,
+                 radius, channel, separation_energy):
         self.spin = spin
         self.parity = parity
         self.energy = energy
@@ -18,6 +19,7 @@ class Level:
         self.width_fixed = width_fixed
         self.channel_radius = radius
         self.channel = channel
+        self.separation_energy = separation_energy
 
 
     def describe(self):

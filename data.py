@@ -70,16 +70,22 @@ class Data:
         i = self.contents.index('<segmentsData>')+1
         j = self.contents.index('</segmentsData>')
 
+        # All segments listed in the file.
         self.all_segments = []
         for row in self.contents[i:j]:
             if row != '':
                 self.all_segments.append(Segment(row))
 
+        # All segments included in the calculation.
         self.segments = []
         for seg in self.all_segments:
             if seg.include:
                 self.segments.append(seg)
 
+        # Number of data points for each included segment.
+        self.ns = [seg.n for seg in self.segments] 
+
+        # Output files that need to be read.
         self.output_files = []
         for seg in self.segments:
             self.output_files.append(seg.output_filename)
