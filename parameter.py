@@ -20,7 +20,7 @@ class Parameter:
         
         jpi_label = '+' if self.parity == 1 else '-'
         subscript = f'{rank:d},{channel:d}'
-        superscript = f'({jpi_label:s}{spin:.1f}'
+        superscript = f'({jpi_label:s}{spin:.1f})'
         if self.kind == 'energy':
             self.label = r'$E_{%s}^{%s}$' % (subscript, superscript)
         elif self.kind == 'width':

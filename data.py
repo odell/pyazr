@@ -38,7 +38,8 @@ class Segment:
         '''
         row = self.row.copy()
         row[INCLUDE_INDEX] = '1' if self.include else '0'
-        row[CHANNEL_INDEX] = str(self.channel)
+        row[IN_CHANNEL_INDEX] = str(self.in_channel)
+        row[OUT_CHANNEL_INDEX] = str(self.out_channel)
         row[FILENAME_INDEX] = str(self.filename)
         
         return ' '.join(row)
@@ -89,6 +90,8 @@ class Data:
         self.output_files = []
         for seg in self.segments:
             self.output_files.append(seg.output_filename)
+        # Eliminates repeated output files AND SORTS them:
+        # (1, 2, 3, ..., TOTAL_CAPTURE)
         self.output_files = list(np.unique(self.output_files))
 
 
