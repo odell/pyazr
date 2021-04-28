@@ -139,6 +139,7 @@ _Store
 *.png
 *.svg
 *.orig
+*.swp
 output_mcazure_*/
 data_mcazure_*/
 mcazure_*.azr
