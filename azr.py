@@ -35,7 +35,9 @@ class AZR:
             parameters = []
             jpis = []
             for group in self.initial_levels:
+                # grab the J^pi from the first row in the group
                 jpi = group[0].spin*group[0].parity
+                # add it to the list
                 jpis.append(jpi)
                 for (i, sublevel) in enumerate(group):
                     spin = sublevel.spin
@@ -45,7 +47,15 @@ class AZR:
                         if not sublevel.energy_fixed:
                             parameters.append(Parameter(spin, parity, 'energy', i+1, rank=rank))
                     if not sublevel.width_fixed:
-                        parameters.append(Parameter(spin, parity, 'width', i+1, rank=rank))
+                        if sublevel.energy < sublevel.separation_energy:
+                            parameters.append(
+                                Parameter(spin, parity, 'width', i+1, rank=rank,
+                                          is_anc=True)
+                            )
+                        else:
+                            parameters.append(
+                                Parameter(spin, parity, 'width', i+1, rank=rank)
+                            )
         self.parameters = parameters
 
         '''

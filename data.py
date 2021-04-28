@@ -38,7 +38,8 @@ class Segment:
         '''
         row = self.row.copy()
         row[INCLUDE_INDEX] = '1' if self.include else '0'
-        row[CHANNEL_INDEX] = str(self.channel)
+        row[IN_CHANNEL_INDEX] = str(self.in_channel)
+        row[OUT_CHANNEL_INDEX] = str(self.out_channel)
         row[FILENAME_INDEX] = str(self.filename)
         
         return ' '.join(row)
@@ -70,19 +71,27 @@ class Data:
         i = self.contents.index('<segmentsData>')+1
         j = self.contents.index('</segmentsData>')
 
+        # All segments listed in the file.
         self.all_segments = []
         for row in self.contents[i:j]:
             if row != '':
                 self.all_segments.append(Segment(row))
 
+        # All segments included in the calculation.
         self.segments = []
         for seg in self.all_segments:
             if seg.include:
                 self.segments.append(seg)
 
+        # Number of data points for each included segment.
+        self.ns = [seg.n for seg in self.segments] 
+
+        # Output files that need to be read.
         self.output_files = []
         for seg in self.segments:
             self.output_files.append(seg.output_filename)
+        # Eliminates repeated output files AND SORTS them:
+        # (1, 2, 3, ..., TOTAL_CAPTURE)
         self.output_files = list(np.unique(self.output_files))
 
 
