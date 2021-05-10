@@ -37,10 +37,12 @@ class Segment:
         Returns a string of the text in the segment line.
         '''
         row = self.row.copy()
+        # Are these lines...
         row[INCLUDE_INDEX] = '1' if self.include else '0'
         row[IN_CHANNEL_INDEX] = str(self.in_channel)
         row[OUT_CHANNEL_INDEX] = str(self.out_channel)
         row[FILENAME_INDEX] = str(self.filename)
+        # necessary?
         
         return ' '.join(row)
 
