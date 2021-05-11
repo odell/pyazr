@@ -15,13 +15,33 @@ from nodata import Test
 class AZR:
     '''
     Object that manages the communication between Python and AZURE2.
+
+    Attributes specified at instantiation:
     input_filename   : .azr file
     parameters       : list of Parameter instances (sampled parameters)
     output_filenames : Which output files (AZUREOut_*.out) are read?
     extrap_filenames : Which output files (AZUREOut_*.extrap) are read?
+
+    Other attributes (given default values below):
+    use_brune        : Bool that indicates the use of the Brune
+                       parameterization.
+    use_gsl          : Bool that indicates the use of GSL Coulomb functions.
+    ext_par_file     : Filename where parameter values can be read.
+    ext_capture_file : Filename where external capture integral results have
+                       been stored.
+    command          : Name of AZURE2 binary.
     '''
     def __init__(self, input_filename, parameters=None, output_filenames=None,
                  extrap_filenames=None):
+        # Give default values to attributes that are not specified at
+        # instantiation. These values must be changed *after* instantiation.
+        self.use_brune = True
+        self.use_gsl = True
+        self.ext_par_file = '\n'
+        self.ext_capture_file = '\n'
+        self.command = 'AZURE2'
+
+        # Handles arguments.
         self.input_filename = input_filename
         self.input_file_contents = utility.read_input_file(input_filename)
         self.initial_levels = utility.read_levels(input_filename)
@@ -73,13 +93,6 @@ class AZR:
             self.extrap_filenames = self.test.output_files
         else:
             self.extrap_filenames = extrap_filenames
-
-        # default values
-        self.use_brune = True
-        self.use_gsl = True
-        self.ext_par_file = '\n'
-        self.ext_capture_file = '\n'
-        self.command = 'AZURE2'
 
         Jpi = [l[0].spin*l[0].parity for l in self.initial_levels]
         self.addresses = []
