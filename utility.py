@@ -212,8 +212,9 @@ def write_ext_capture_file(filename, data):
             f.write(f'({x:.5e},{y:.5e})\n')
         
     
-def run_AZURE2(input_filename, choice=1, use_brune=False, ext_par_file='\n', ext_capture_file='\n', use_gsl=False):
-    cl_args = ['AZURE2', input_filename, '--no-gui', '--no-readline']
+def run_AZURE2(input_filename, choice=1, use_brune=False, ext_par_file='\n',
+        ext_capture_file='\n', use_gsl=False, command='AZURE2'):
+    cl_args = [command, input_filename, '--no-gui', '--no-readline']
     if use_brune:
         cl_args += ['--use-brune']
     if use_gsl:

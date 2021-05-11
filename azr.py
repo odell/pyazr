@@ -79,6 +79,7 @@ class AZR:
         self.use_gsl = True
         self.ext_par_file = '\n'
         self.ext_capture_file = '\n'
+        self.command = 'AZURE2'
 
         Jpi = [l[0].spin*l[0].parity for l in self.initial_levels]
         self.addresses = []
@@ -150,7 +151,8 @@ class AZR:
 
         response = utility.run_AZURE2(input_filename, choice=1,
             use_brune=self.use_brune, ext_par_file=self.ext_par_file,
-            ext_capture_file=self.ext_capture_file, use_gsl=self.use_gsl)
+            ext_capture_file=self.ext_capture_file, use_gsl=self.use_gsl,
+            command=self.command)
 
         if dress_up:
             output = [Output(output_dir + '/' + of) for of in
@@ -196,7 +198,8 @@ class AZR:
         response = utility.run_AZURE2(input_filename, choice=3,
             use_brune=use_brune if use_brune is not None else self.use_brune,
             use_gsl=use_gsl if use_gsl is not None else self.use_gsl,
-            ext_par_file=self.ext_par_file)
+            ext_par_file=self.ext_par_file,
+            command=self.command)
 
         output = [np.loadtxt(output_dir + '/' + of) for of in
                   t.get_output_files()]
@@ -218,7 +221,8 @@ class AZR:
                                  input_filename, output_dir)
         response = utility.run_AZURE2(input_filename, choice=1,
             use_brune=self.use_brune, ext_par_file=self.ext_par_file,
-            ext_capture_file=self.ext_capture_file, use_gsl=self.use_gsl)
+            ext_capture_file=self.ext_capture_file, use_gsl=self.use_gsl,
+            command=self.command)
 
         rwas = utility.read_rwas_jpi(output_dir)
 
@@ -243,7 +247,8 @@ class AZR:
                                  input_filename, output_dir)
         response = utility.run_AZURE2(input_filename, choice=1,
             use_brune=self.use_brune, ext_par_file=self.ext_par_file,
-            ext_capture_file='\n', use_gsl=use_gsl)
+            ext_capture_file='\n', use_gsl=use_gsl,
+            command=self.command)
 
         ec = utility.read_ext_capture_file(output_dir + '/intEC.dat')
 
