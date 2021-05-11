@@ -48,7 +48,7 @@ Data structure to organize the information contained in line of the
 
 ### Data
 
-Data structure that hold a list of Segments and provides some convenient
+Data structure that holds a list of Segments and provides some convenient
 functions for applying actions to all of them.
 
 ## Example
