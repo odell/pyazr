@@ -1,5 +1,6 @@
 # MCMC chain files
 *.h5
+*.ipynb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
