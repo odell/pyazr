@@ -8,6 +8,8 @@ import utility
 INCLUDE_INDEX = 0
 IN_CHANNEL_INDEX = 1
 OUT_CHANNEL_INDEX = 2
+NORM_FACTOR_INDEX = 8
+VARY_NORM_FACTOR_INDEX = 9
 FILENAME_INDEX = 11
 
 class Segment:
@@ -21,6 +23,8 @@ class Segment:
         self.in_channel = int(self.row[IN_CHANNEL_INDEX])
         self.out_channel = int(self.row[OUT_CHANNEL_INDEX])
         self.filename = self.row[FILENAME_INDEX]
+        self.norm_factor = float(self.row[NORM_FACTOR_INDEX])
+        self.vary_norm_factor = int(self.row[VARY_NORM_FACTOR_INDEX])
         
         self.values_original = np.loadtxt(self.filename)
         self.values = np.copy(self.values_original)

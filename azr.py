@@ -150,8 +150,9 @@ class AZR:
             * reads observable from output_[rand]/output_filename
             * deletes [rand].azr
             * deletes output_[rand]/
+            * deletes data_[rand]/
         Returns:
-            * predicted values a reduced width amplitudes.
+            * predicted values and (optionally) reduced width amplitudes.
         '''
         input_filename, output_dir, data_dir = utility.random_workspace()
 
