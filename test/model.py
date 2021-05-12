@@ -18,31 +18,13 @@ from parameter import Parameter
 ########################################
 # Set up AZR object and data.
 
-parameters = [
-    Parameter(1/2, -1, 'width', 1),
-    Parameter(1/2, 1, 'energy', 1),
-    Parameter(1/2, 1, 'width', 1),
-    Parameter(1/2, 1, 'width', 2)
-]
-
-# The number of parameters = number of R-matrix parameters.
-nrpar = len(parameters)
-nd = nrpar
-
-labels = [
-    r'$C_{1/2-}$',
-    r'$E_{1/2+}$',
-    r'$\Gamma_{1/2+,p}$',
-    r'$\Gamma_{1/2+,\gamma}$'
-]
-
 # We have to tell AZURE2 which output files it should look at.
 # (This could/should be inferred from the data segments in the .azr file.)
 # R=2 => particle pair 2
 output_files = ['AZUREOut_aa=1_R=2.out']
 
 # We have all of the information we need to instantiate our AZR object.
-azr = AZR('12C+p.azr', parameters, output_files)
+azr = AZR('12C+p.azr')
 azr.root_directory = '/tmp/'
 
 # We'll read the data from the output file since it's already in the
@@ -66,7 +48,8 @@ priors = [
     stats.uniform(0, 5),
     stats.uniform(1, 5),
     stats.uniform(0, 50000),
-    stats.uniform(-100, 200)
+    stats.uniform(-100, 200),
+    stats.lognorm(0.1)
 ]
 
 def lnPi(theta):
