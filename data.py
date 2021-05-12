@@ -46,6 +46,7 @@ class Segment:
         row[IN_CHANNEL_INDEX] = str(self.in_channel)
         row[OUT_CHANNEL_INDEX] = str(self.out_channel)
         row[FILENAME_INDEX] = str(self.filename)
+        row[NORM_FACTOR_INDEX] = str(self.norm_factor)
         # necessary?
         
         return ' '.join(row)
@@ -89,6 +90,12 @@ class Data:
             if seg.include:
                 self.segments.append(seg)
 
+        # Indices of segments with varied normalization constants.
+        self.norm_segment_indices = []
+        for (i, seg) in enumerate(self.all_segments):
+            if seg.include and seg.vary_norm_factor:
+                self.norm_segment_indices.append(i)
+
         # Number of data points for each included segment.
         self.ns = [seg.n for seg in self.segments] 
 
@@ -121,4 +128,17 @@ class Data:
         for (i, segment) in zip(range(start, stop), self.all_segments):
             contents[i] = segment.string()
 
+        return contents
+
+
+    def update_norm_factors(self, theta_norm, contents):
+        assert len(theta_norm) == len(self.norm_segment_indices), '''
+Number of normalization factors does not match the number of data segments
+indicating the normalization factor should be varied.
+'''
+        for (f, i) in zip(theta_norm, self.norm_segment_indices):
+            self.all_segments[i].norm_factor = f
+
+        self.write_segments(contents)
+        
         return contents
