@@ -82,8 +82,8 @@ class Config:
         self.input_file_contents = self.data.write_segments(self.input_file_contents)
 
 
-    def generate_new_workspace(self, theta, mod_data=False):
-        input_filename, output_dir, data_dir = utility.random_workspace()
+    def generate_workspace(self, theta, mod_data=False, prepend=''):
+        input_filename, output_dir, data_dir = utility.random_workspace(prepend=prepend)
 
         if mod_data:
             self.update_data_directories(data_dir)

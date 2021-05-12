@@ -43,6 +43,7 @@ output_files = ['AZUREOut_aa=1_R=2.out']
 
 # We have all of the information we need to instantiate our AZR object.
 azr = AZR('12C+p.azr', parameters, output_files)
+azr.root_directory = '/tmp/'
 
 # We'll read the data from the output file since it's already in the
 # center-of-mass frame.

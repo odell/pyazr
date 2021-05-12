@@ -41,6 +41,7 @@ class AZR:
         self.ext_par_file = '\n'
         self.ext_capture_file = '\n'
         self.command = 'AZURE2'
+        self.root_directory = ''
         
         self.config = Config(input_filename)
 
@@ -89,7 +90,8 @@ class AZR:
         Returns:
             * predicted values and (optionally) reduced width amplitudes.
         '''
-        workspace = self.config.generate_new_workspace(theta, mod_data=mod_data)
+        workspace = self.config.generate_workspace(theta, mod_data=mod_data,
+                prepend=self.root_directory)
         input_filename, output_dir, data_dir = workspace
 
         try:
