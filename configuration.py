@@ -9,7 +9,7 @@ from nodata import Test
 from parameter import Parameter
 
 class Config:
-    def __init__(self, input_filename):
+    def __init__(self, input_filename, parameters=None):
         self.input_filename = input_filename
         self.input_filename = input_filename
         self.input_file_contents = utility.read_input_file(input_filename)
@@ -17,30 +17,33 @@ class Config:
         self.data = Data(self.input_filename)
         self.test = Test(self.input_filename)
 
-        self.parameters = []
-        jpis = []
-        for group in self.initial_levels:
-            # grab the J^pi from the first row in the group
-            jpi = group[0].spin*group[0].parity
-            # add it to the list
-            jpis.append(jpi)
-            for (i, sublevel) in enumerate(group):
-                spin = sublevel.spin
-                parity = sublevel.parity
-                rank = jpis.count(jpi)
-                if i == 0:
-                    if not sublevel.energy_fixed:
-                        self.parameters.append(Parameter(spin, parity, 'energy', i+1, rank=rank))
-                if not sublevel.width_fixed:
-                    if sublevel.energy < sublevel.separation_energy:
-                        self.parameters.append(
-                            Parameter(spin, parity, 'width', i+1, rank=rank,
-                                      is_anc=True)
-                        )
-                    else:
-                        self.parameters.append(
-                            Parameter(spin, parity, 'width', i+1, rank=rank)
-                        )
+        if parameters is None:
+            self.parameters = []
+            jpis = []
+            for group in self.initial_levels:
+                # grab the J^pi from the first row in the group
+                jpi = group[0].spin*group[0].parity
+                # add it to the list
+                jpis.append(jpi)
+                for (i, sublevel) in enumerate(group):
+                    spin = sublevel.spin
+                    parity = sublevel.parity
+                    rank = jpis.count(jpi)
+                    if i == 0:
+                        if not sublevel.energy_fixed:
+                            self.parameters.append(Parameter(spin, parity, 'energy', i+1, rank=rank))
+                    if not sublevel.width_fixed:
+                        if sublevel.energy < sublevel.separation_energy:
+                            self.parameters.append(
+                                Parameter(spin, parity, 'width', i+1, rank=rank,
+                                          is_anc=True)
+                            )
+                        else:
+                            self.parameters.append(
+                                Parameter(spin, parity, 'width', i+1, rank=rank)
+                            )
+        else:
+            self.parameters = parameters
 
         Jpi = [l[0].spin*l[0].parity for l in self.initial_levels]
         self.addresses = []
@@ -55,6 +58,12 @@ class Config:
         self.n2 = len(self.data.norm_segment_indices)
         # number of free parameters
         self.nd = self.n1 + self.n2
+
+        self.labels = []
+        for i in range(self.n1):
+            self.labels.append(self.parameters[i].label)
+        for i in self.data.norm_segment_indices:
+            self.labels.append(self.data.all_segments[i].nf.label)
 
 
     def generate_levels(self, theta):

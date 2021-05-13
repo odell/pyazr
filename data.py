@@ -4,6 +4,7 @@ Classes to hold Data segments as found in .azr files.
 
 import numpy as np
 import utility
+from parameter import NormFactor
 
 INCLUDE_INDEX = 0
 IN_CHANNEL_INDEX = 1
@@ -17,7 +18,7 @@ class Segment:
     Structure to organize the information contained in a line in the
     <segmentsData> section of an AZURE2 input file.
     '''
-    def __init__(self, row):
+    def __init__(self, row, index):
         self.row = row.split()
         self.include = (int(self.row[INCLUDE_INDEX]) == 1)
         self.in_channel = int(self.row[IN_CHANNEL_INDEX])
@@ -25,6 +26,12 @@ class Segment:
         self.filename = self.row[FILENAME_INDEX]
         self.norm_factor = float(self.row[NORM_FACTOR_INDEX])
         self.vary_norm_factor = int(self.row[VARY_NORM_FACTOR_INDEX])
+        self.index = index
+
+        if self.vary_norm_factor:
+            self.nf = NormFactor(self.index)
+        else:
+            self.nf = None
         
         self.values_original = np.loadtxt(self.filename)
         self.values = np.copy(self.values_original)
@@ -80,9 +87,11 @@ class Data:
 
         # All segments listed in the file.
         self.all_segments = []
+        k = 0
         for row in self.contents[i:j]:
             if row != '':
-                self.all_segments.append(Segment(row))
+                self.all_segments.append(Segment(row, k))
+                k += 1
 
         # All segments included in the calculation.
         self.segments = []

@@ -49,6 +49,7 @@ priors = [
     stats.uniform(1, 5),
     stats.uniform(0, 50000),
     stats.uniform(-100, 200),
+    stats.lognorm(0.1),
     stats.lognorm(0.1)
 ]
 

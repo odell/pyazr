@@ -40,3 +40,12 @@ particle pair {self.channel}, {self.label}'
 
     def print(self):
         print(self.string())
+
+
+class NormFactor:
+    '''
+    Defines a sampled normalization factor (n_i in the AZURE2 manual).
+    '''
+    def __init__(self, dataset_index):
+        self.index = dataset_index
+        self.label = rf'$n_{self.index}$'

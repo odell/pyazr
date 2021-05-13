@@ -43,7 +43,7 @@ class AZR:
         self.command = 'AZURE2'
         self.root_directory = ''
         
-        self.config = Config(input_filename)
+        self.config = Config(input_filename, parameters=parameters)
 
         '''
         If parameters are not specified, they are inferred from the input file.
