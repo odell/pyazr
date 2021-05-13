@@ -117,12 +117,26 @@ class Data:
         self.output_files = list(np.unique(self.output_files))
 
 
-    def update_all_dir(self, new_dir):
+    def update_all_dir(self, new_dir, contents):
         '''
         Updates all the path directories of the segments.
         '''
-        for seg in self.all_segments:
-            seg.update_dir(new_dir)
+        start = contents.index('<segmentsData>')+1
+        stop = contents.index('</segmentsData>')
+
+        new_contents = contents.copy()
+
+        for i in range(start, stop):
+            row = contents[i].split()
+            old_path = row[FILENAME_INDEX]
+            j = old_path.find('/') + 1
+            row[FILENAME_INDEX] = new_dir + '/' + old_path[j:]
+            new_contents[i] = ' '.join(row)
+        
+        return new_contents
+
+#         for seg in self.all_segments:
+#             seg.update_dir(new_dir)
 
 
     def write_segments(self, contents):

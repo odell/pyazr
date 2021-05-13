@@ -93,14 +93,14 @@ class Config:
         return values
 
 
-    def update_data_directories(self, new_dir):
+    def update_data_directories(self, new_dir, contents):
         '''
         The data needs to be stored in a new location (new_dir), so the input
         has to reflect that. In preparation, the contents of the input file are
         updated here.
         '''
-        self.data.update_all_dir(new_dir)
-        self.input_file_contents = self.data.write_segments(self.input_file_contents)
+        contents = self.data.update_all_dir(new_dir, contents)
+        return self.data.write_segments(contents)
 
 
     def generate_workspace(self, theta, mod_data=False, prepend=''):
@@ -112,12 +112,13 @@ class Config:
         contents = self.input_file_contents.copy()
 
         new_levels = self.generate_levels(theta[:self.n1])
-        contents = self.data.update_norm_factors(theta[self.n1:], contents)
+        contents = self.data.update_norm_factors(theta[self.n1:self.n1+self.n2],
+            contents)
 
         input_filename, output_dir, data_dir = utility.random_workspace(prepend=prepend)
 
         if mod_data:
-            self.update_data_directories(data_dir)
+            contents = self.update_data_directories(data_dir, contents)
 
         utility.write_input_file(contents, new_levels, input_filename,
             output_dir)
