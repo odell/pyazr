@@ -21,17 +21,20 @@ import model
 # We'll set up the sampler and get it started.
 
 nd = model.azr.config.nd
-nw = 2*nd # number of walkers = 4 * number of sampled parameters
+nw = 2*nd # number of walkers = 2 * number of sampled parameters
 
 # Pick a point (theta) in parameter space around which we'll start each walker.
-# theta0 = [2.1, 2.37, 33600, -0.6325]
-theta0 = np.array(model.azr.config.get_input_values())
+theta0 = [2.1, 2.37, 33600, -0.6325]
+# theta0 = np.array(model.azr.config.get_input_values())
+# theta0 = np.array([[pi.rvs() for pi in model.priors] for _ in range(nw)])
 # Each walkers needs its own starting position. We'll take normally distributed
 # random values centered at theta0.
 p0 = np.zeros((nw, nd))
+
+mask = np.array([0.01, 0.0001, 0.01, 0.01])
 for i in range(nw):
     mu = theta0
-    sig = np.abs(theta0) * 0.01 # 1% width
+    sig = np.abs(theta0) * mask # 1% width
     p0[i, :] = stats.norm(mu, sig).rvs()
 
 # We'll store the chain in test_mcmc.h5. (See emcee Backends documentation.)

@@ -131,7 +131,7 @@ class AZR:
 
 
     def extrapolate(self, theta, segment_indices=None, use_brune=None,
-                    use_gsl=None):
+                    use_gsl=None, ext_capture_file='\n'):
         '''
         See predict() documentation.
         '''
@@ -144,6 +144,7 @@ class AZR:
                 use_brune=use_brune if use_brune is not None else self.use_brune,
                 use_gsl=use_gsl if use_gsl is not None else self.use_gsl,
                 ext_par_file=self.ext_par_file,
+                ext_capture_file=ext_capture_file,
                 command=self.command)
         except:
             shutil.rmtree(output_dir)
