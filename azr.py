@@ -127,6 +127,8 @@ class AZR:
             shutil.rmtree(data_dir)
             os.remove(input_filename)
             print('Output files were not properly read.')
+            print('AZURE output:')
+            print(response)
             raise
 
 
