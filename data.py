@@ -11,7 +11,7 @@ IN_CHANNEL_INDEX = 1
 OUT_CHANNEL_INDEX = 2
 NORM_FACTOR_INDEX = 8
 VARY_NORM_FACTOR_INDEX = 9
-FILENAME_INDEX = 11
+FILEPATH_INDEX = 11
 
 class Segment:
     '''
@@ -23,17 +23,20 @@ class Segment:
         self.include = (int(self.row[INCLUDE_INDEX]) == 1)
         self.in_channel = int(self.row[IN_CHANNEL_INDEX])
         self.out_channel = int(self.row[OUT_CHANNEL_INDEX])
-        self.filename = self.row[FILENAME_INDEX]
         self.norm_factor = float(self.row[NORM_FACTOR_INDEX])
         self.vary_norm_factor = int(self.row[VARY_NORM_FACTOR_INDEX])
         self.index = index
+
+        self.filepath = self.row[FILEPATH_INDEX]
+        i = self.filepath.find('/')
+        self.filename = self.filepath[i+1:]
 
         if self.vary_norm_factor:
             self.nf = NormFactor(self.index)
         else:
             self.nf = None
         
-        self.values_original = np.loadtxt(self.filename)
+        self.values_original = np.loadtxt(self.filepath)
         self.values = np.copy(self.values_original)
         self.n = self.values.shape[0]
 
@@ -52,28 +55,31 @@ class Segment:
         row[INCLUDE_INDEX] = '1' if self.include else '0'
         row[IN_CHANNEL_INDEX] = str(self.in_channel)
         row[OUT_CHANNEL_INDEX] = str(self.out_channel)
-        row[FILENAME_INDEX] = str(self.filename)
+        row[FILEPATH_INDEX] = str(self.filepath)
         row[NORM_FACTOR_INDEX] = str(self.norm_factor)
         # necessary?
         
         return ' '.join(row)
 
 
-    def update_dir(self, new_dir):
+    def update_dir(self, new_dir, values=None):
         '''
         Updates the path directory of the segment.
         If modifications are made to the data, the modified data is written to
         an ephemeral directory so that multiple processes can do so
         simultaneously.
         '''
-        i = self.filename.find('/')
-        if i >= 0:
-            self.filename = new_dir + '/' + self.filename[i+1:]
-            np.savetxt(self.filename, self.values)
+        filepath = new_dir + '/' + self.filename
+        if values is not None:
+            np.savetxt(filepath, values)
+        else:
+            np.savetxt(filepath, self.values)
 
 
     def shift_energies(self, shift):
-        self.values[:, 0] = self.values_original[:, 0] + shift
+        values = np.copy(self.values_original)
+        values[:, 0] += shift
+        return values
 
 
 class Data:
@@ -128,15 +134,16 @@ class Data:
 
         for i in range(start, stop):
             row = contents[i].split()
-            old_path = row[FILENAME_INDEX]
+            old_path = row[FILEPATH_INDEX]
             j = old_path.find('/') + 1
-            row[FILENAME_INDEX] = new_dir + '/' + old_path[j:]
+            row[FILEPATH_INDEX] = new_dir + '/' + old_path[j:]
             new_contents[i] = ' '.join(row)
         
+        for seg in self.all_segments:
+            seg.update_dir(new_dir)
+
         return new_contents
 
-#         for seg in self.all_segments:
-#             seg.update_dir(new_dir)
 
 
     def write_segments(self, contents):

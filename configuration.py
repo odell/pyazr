@@ -103,7 +103,7 @@ class Config:
         return self.data.write_segments(contents)
 
 
-    def generate_workspace(self, theta, mod_data=False, prepend=''):
+    def generate_workspace(self, theta, prepend='', mod_data=None):
         '''
         Config handles the configuration of the calculation. That includes:
         * mapping theta to the relevant values in the input file
@@ -117,11 +117,16 @@ class Config:
 
         input_filename, output_dir, data_dir = utility.random_workspace(prepend=prepend)
 
-        if mod_data:
-            contents = self.update_data_directories(data_dir, contents)
 
-        utility.write_input_file(contents, new_levels, input_filename,
-            output_dir)
+        if mod_data is not None:
+            utility.write_input_file(contents, new_levels, input_filename,
+                output_dir, data_dir=data_dir)
+            self.data.update_all_dir(data_dir, contents)
+            for (i, data) in mod_data:
+                self.data.segments[i].update_dir(data_dir, data)
+        else:
+            utility.write_input_file(contents, new_levels, input_filename,
+                output_dir)
 
         return input_filename, output_dir, data_dir
 

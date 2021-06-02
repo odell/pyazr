@@ -23,6 +23,7 @@ WIDTH_FIXED_INDEX = 10
 SEPARATION_ENERGY_INDEX = 21
 CHANNEL_RADIUS_INDEX = 27
 OUTPUT_DIR_INDEX = 2
+DATA_FILEPATH_INDEX = 11
 
 def read_input_file(filename):
     '''
@@ -105,8 +106,21 @@ def random_workspace(prepend=''):
     return input_filename, output_dir, data_dir
 
 
+def update_segmentsData_dir(contents0, data_dir):
+    contents = contents0.copy()
+    start = contents0.index('<segmentsData>')+1
+    stop = contents0.index('</segmentsData>')
+
+    for i in range(start, stop):
+        row = contents[i].split()
+        row[11] = row[11].replace('data', data_dir)
+        contents[i] = ' '.join(row)
+    
+    return contents
+
+
 def write_input_file(old_input_file_contents, new_levels, input_filename,
-    output_dir):
+    output_dir, data_dir=None):
     '''
         Takes:
             * contents of an old .azr file (see read_input_file function)
@@ -126,8 +140,8 @@ def write_input_file(old_input_file_contents, new_levels, input_filename,
     level_indices = [i for (i, line) in enumerate(old_levels) if line != '']
     nlevels = len(level_indices)
     blank_indices = [i for i in range(nlines) if i not in level_indices]
-    assert (nlevels == len(new_levels)),\
-        'The number of levels passed in does not match the number of existing levels.'
+    assert (nlevels == len(new_levels)), '''
+The number of levels passed in does not match the number of existing levels.'''
 
     # Replace the old level parameters with the new parameters.
     new_level_data = []
@@ -145,6 +159,10 @@ def write_input_file(old_input_file_contents, new_levels, input_filename,
             nlevel[CHANNEL_RADIUS_INDEX] = str(level.channel_radius)
             new_level_data.append(str.join('  ', nlevel))
             j += 1
+
+    # If the data directory is specified, then we'll update it.
+    if data_dir is not None:
+        old_input_file_contents = update_segmentsData_dir(old_input_file_contents, data_dir)
 
     # Write the new parameters to the same input file.
     with open(input_filename, 'w') as f:

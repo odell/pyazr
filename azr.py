@@ -70,7 +70,7 @@ class AZR:
             self.extrap_filenames = extrap_filenames
 
 
-    def predict(self, theta, mod_data=False, dress_up=True, full_output=False):
+    def predict(self, theta, mod_data=None, dress_up=True, full_output=False):
         '''
         Takes:
             * a point in parameter space, theta.
@@ -90,8 +90,12 @@ class AZR:
         Returns:
             * predicted values and (optionally) reduced width amplitudes.
         '''
-        workspace = self.config.generate_workspace(theta, mod_data=mod_data,
-                prepend=self.root_directory)
+
+        workspace = self.config.generate_workspace(
+            theta,
+            prepend=self.root_directory,
+            mod_data=mod_data
+        )
         input_filename, output_dir, data_dir = workspace
 
         try:
